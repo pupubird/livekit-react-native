@@ -318,9 +318,6 @@ const RoomView = ({navigation}: RoomViewProps) => {
           let encodedData = encoder.encode(message);
           send(encodedData, {reliable: true});
         }}
-        onSimulate={(scenario: SimulateScenario) => {
-          room.simulateScenario(scenario);
-        }}
         onDisconnectClick={() => {
           navigation.pop();
         }}
