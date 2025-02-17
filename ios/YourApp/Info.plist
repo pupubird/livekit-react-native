@@ -1,0 +1,6 @@
+<key>NSCameraUsageDescription</key>
+<string>Camera access is required for video calls</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>Microphone access is required for audio calls</string>
+<key>NSScreenCaptureUsageDescription</key>
+<string>Screen recording access is required for screen sharing</string> 

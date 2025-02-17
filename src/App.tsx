@@ -7,7 +7,9 @@ import {
 import {PreJoinPage} from './PreJoinPage';
 import {RoomPage} from './RoomPage';
 import Toast from 'react-native-toast-message';
+import {registerGlobals} from '@livekit/react-native';
 
+registerGlobals();
 export type RootStackParamList = {
   PreJoinPage: undefined;
   RoomPage: {url: string; token: string};

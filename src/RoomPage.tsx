@@ -57,6 +57,17 @@ type RoomControlsProps = {
   onDisconnectClick: () => void;
 };
 
+const setupIOSScreenSharing = async () => {
+  if (Platform.OS === 'ios') {
+    try {
+      // Request system broadcast permission
+      await NativeModules.LiveKitReactNative.requestScreenShare();
+    } catch (e) {
+      console.error('Failed to setup iOS screen sharing:', e);
+    }
+  }
+};
+
 const requestPermissions = async () => {
   if (Platform.OS === 'ios') {
     try {
@@ -99,8 +110,11 @@ const initializeRoom = async () => {
   if (Platform.OS === 'ios') {
     try {
       await mediaDevices.getUserMedia({audio: true, video: true});
+      // Add screen sharing setup
+      // await setupIOSScreenSharing();
     } catch (e) {
-      console.warn('Initial getUserMedia failed:', e);
+      console.warn('Initial getUserMedia or broadcast permission failed:', e);
+      throw e;
     }
   }
 };
@@ -252,9 +266,22 @@ const RoomView = ({navigation}: RoomViewProps) => {
 
   const startBroadcast = async () => {
     if (Platform.OS === 'ios') {
-      const reactTag = findNodeHandle(screenCaptureRef.current);
-      await NativeModules.ScreenCapturePickerViewManager.show(reactTag);
-      localParticipant.setScreenShareEnabled(true);
+      try {
+        const reactTag = findNodeHandle(screenCaptureRef.current);
+        // First ensure screen sharing is properly setup
+        // await setupIOSScreenSharing();
+        // Then show the picker
+        await NativeModules.ScreenCapturePickerViewManager.show(reactTag);
+        // Enable screen sharing after user selection
+        localParticipant.setScreenShareEnabled(true);
+      } catch (error) {
+        console.error('Failed to start broadcast:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Screen Share Error',
+          text2: 'Failed to start screen sharing',
+        });
+      }
     } else {
       localParticipant.setScreenShareEnabled(true);
     }
